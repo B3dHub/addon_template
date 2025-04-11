@@ -1,7 +1,8 @@
 import bpy
 from bpy.types import Panel
 
-from ..utils import icons, package, preferences, version, version_str
+from ..utils.addon import package, version, version_str
+from ..utils.icon import icons
 
 
 class Addon:
@@ -9,9 +10,7 @@ class Addon:
     bl_region_type = "UI"
     bl_category = "Addon"
 
-    def draw_list(
-        self, layout, listtype_name, dataptr, propname, active_propname, rows=4
-    ):
+    def draw_list(self, layout, listtype_name, dataptr, propname, active_propname, rows=4):
         row = layout.row()
         row.scale_y = 1.2
         row.template_list(
@@ -44,9 +43,7 @@ class XX_PT_object_mode(Panel, Addon):
         prop = context.scene.test
 
         layout.prop(prop, "name")
-        layout.template_icon_view(
-            prop, "preview", show_labels=True, scale=6.0, scale_popup=6.0
-        )
+        layout.template_icon_view(prop, "preview", show_labels=True, scale=6.0, scale_popup=6.0)
         layout.operator("xx.test")
 
 
@@ -73,28 +70,21 @@ class XX_PT_help(Panel, Addon):
 
     def draw_header_preset(self, context):
         layout = self.layout
-        layout.operator(
-            "preferences.addon_show", icon="PREFERENCES", emboss=False
-        ).module = package
+        layout.operator("preferences.addon_show", icon="PREFERENCES", emboss=False).module = package
 
     def draw(self, context):
         layout = self.layout
-        layout.use_property_decorate = False
-        layout.scale_x = 1.2
-        layout.scale_y = 1.2
 
         col = layout.column()
         if version >= (1, 0, 1):
             col.operator("xx.changelog", icon="RECOVER_LAST")
-        col.operator("wm.url_open", text="Documentation", icon="HELP").url = ""
-        col.operator("wm.url_open", text="Report a Bug", icon="URL").url = (
-            "https://discord.gg/sdnHHZpWbT"
+        col.operator("wm.url_open", text="Documentation", icon="HELP").url = "https://b3dhub.github.io/addon-docs"
+        col.operator("wm.url_open", text="Report a Bug", icon="URL").url = "https://discord.gg/sdnHHZpWbT"
+        col.operator("wm.url_open", text="Superhive", icon_value=icons["SUPERHIVE"]).url = (
+            "https://superhivemarket.com/products/addon"
         )
-        col.operator(
-            "wm.url_open", text="Blender Market", icon_value=icons["B_MARKET"]
-        ).url = "https://blendermarket.com/account/orders"
         col.operator("wm.url_open", text="Gumroad", icon_value=icons["GUMROAD"]).url = (
-            "https://app.gumroad.com/library"
+            "https://b3dhub.gumroad.com/l/addon"
         )
 
 

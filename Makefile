@@ -45,8 +45,11 @@ build:
 
 # Create PR from dev to main using version from toml file
 create_pr:
-	@pip install toml --quiet || python -m pip install toml --quiet
-	$(eval VERSION := $(shell powershell -command "python -c \"import toml; print(toml.load('blender_manifest.toml')['version'])\""))
+	@echo "Installing toml package..."
+	@pip install toml --quiet
+	@python -m pip install toml --quiet
+	$(eval VERSION := $(shell powershell -command "python -c \"try: import toml; print(toml.load('blender_manifest.toml')['version']); except ModuleNotFoundError: import subprocess; subprocess.check_call(['pip', 'install', 'toml']); import toml; print(toml.load('blender_manifest.toml')['version'])\""))
+	@echo "Creating PR for version $(VERSION)..."
 	gh pr create --base main --head dev --title "Version $(VERSION)" --body-file CHANGELOG.md
 
 # Merge PR automatically

@@ -1,10 +1,10 @@
 schema_version = "1.0.0"
 
-id = "addon_id"  # root folder name with underscores
+id = "addon_template"  # root folder name with underscores
 version = "0.1.0"
 name = "Addon Name"
 tagline = "Addon Description"
-maintainer = "Karan"
+maintainer = "Karan @b3dhub"
 type = "add-on"
 tags = ["Category"]
 # website = ""

@@ -5,7 +5,7 @@ from collections import defaultdict
 import bpy
 from bpy.types import Operator
 
-from ..utils import version_str
+from .utils.addon import version_str
 
 
 class XX_OT_changelog(Operator):

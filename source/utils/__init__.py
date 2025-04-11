@@ -1,10 +1,4 @@
-import bpy
-
-from . import manual, preview, props
-from .addon import *
-from .icon import *
-
-__all__ = ["icons"]
+from . import icon, manual, prefs, preview, props
 
 
 def register():
@@ -12,6 +6,7 @@ def register():
     preview.register()
     props.register()
     manual.register()
+    prefs.register()
 
 
 def unregister():
@@ -19,3 +14,4 @@ def unregister():
     preview.unregister()
     props.unregister()
     manual.unregister()
+    prefs.unregister()

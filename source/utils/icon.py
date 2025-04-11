@@ -1,6 +1,5 @@
 import os
 
-import bpy
 from bpy.utils import previews
 
 preview_collections = {}

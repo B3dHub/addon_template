@@ -1,10 +1,12 @@
 import bpy
-from bpy.props import *
-from bpy.types import AddonPreferences, PropertyGroup
+from bpy.types import AddonPreferences
+
+from .addon import package
 
 
 class XX_AP_preference(AddonPreferences):
-    bl_idname = __package__.partition(".")[0]
+
+    bl_idname = package
 
     def draw(self, context):
         layout = self.layout

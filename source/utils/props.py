@@ -1,5 +1,5 @@
 import bpy
-from bpy.props import *
+from bpy.props import EnumProperty, StringProperty
 from bpy.types import PropertyGroup
 
 from .preview import enum_previews

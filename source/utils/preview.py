@@ -1,8 +1,6 @@
 import os
 import re
 
-import bpy
-from bpy.props import *
 from bpy.utils import previews
 
 
@@ -16,9 +14,7 @@ def enum_previews(self, context):
 
     enum_items = []
     if os.path.exists(directory):
-        for i, name in enumerate(
-            fn for fn in os.listdir(directory) if fn.lower().endswith(".png")
-        ):
+        for i, name in enumerate(fn for fn in os.listdir(directory) if fn.lower().endswith(".png")):
             filepath = os.path.join(directory, name)
             thumb = pcoll.get(name) or pcoll.load(name, filepath, "IMAGE")
             item_name = re.sub(r"\d+ ", "", name).replace(".png", "")

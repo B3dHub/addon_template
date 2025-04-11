@@ -3,9 +3,7 @@ from bpy.types import UIList
 
 
 class XX_UL_demo_list(UIList):
-    def draw_item(
-        self, context, layout, data, item, icon, active_data, active_propname, index
-    ):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
         row = layout.row(align=True)
         row.label(text="List")
 
