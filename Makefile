@@ -68,7 +68,7 @@ merge_pr: get_version
 # Create GitHub release with version tag and release assets
 create_release: get_version
 	@echo "Creating release with version: $(VERSION)"
-	gh release create "v$(VERSION)" --target main --title "Version $(VERSION)" --notes-file CHANGELOG.md releases/blender_to_unity_v$(VERSION).zip
+	gh release create "v$(VERSION)" --target main --title "Version $(VERSION)" --notes-file CHANGELOG.md releases/$(ROOT_DIR)_v$(VERSION).zip
 
 # ===========================================
 # Complete Release Workflow
