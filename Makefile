@@ -43,17 +43,21 @@ build:
 # Pull Request Management
 # ===========================================
 
-# Create PR from dev to main using version from toml file
-create_pr:
-	@echo "Installing toml package..."
-	@pip install toml --quiet
-	@python -m pip install toml --quiet
-	$(eval VERSION := $(shell powershell -command "python -c \"try: import toml; print(toml.load('blender_manifest.toml')['version']); except ModuleNotFoundError: import subprocess; subprocess.check_call(['pip', 'install', 'toml']); import toml; print(toml.load('blender_manifest.toml')['version'])\""))
-	@echo "Creating PR for version $(VERSION)..."
+# Get version from TOML file
+get_version:
+	@echo "Installing toml module..."
+	@python -m pip install toml --quiet --user 2>nul || python -m pip install toml --quiet 2>nul || pip install toml --quiet 2>nul
+	@echo "Extracting version from blender_manifest.toml..."
+	$(eval VERSION := $(shell python -c "import toml; print(toml.load('blender_manifest.toml')['version'])" 2>nul))
+	@if "$(VERSION)"=="" (echo ERROR: Failed to extract version from blender_manifest.toml & exit 1)
+	@echo "Version extracted: $(VERSION)"
+
+# Create PR from dev to main
+create_pr: get_version
 	gh pr create --base main --head dev --title "Version $(VERSION)" --body-file CHANGELOG.md
 
 # Merge PR automatically
-merge_pr:
+merge_pr: get_version
 	gh pr merge --auto --merge
 	@echo "Successfully merged dev into main"
 
@@ -62,10 +66,9 @@ merge_pr:
 # ===========================================
 
 # Create GitHub release with version tag and release assets
-create_release:
-	$(eval version ?= $(VERSION))
-	$(eval ROOT_DIR := $(notdir $(CURDIR)))
-	gh release create "v$(version)" --target main --title "Version $(version)" --notes-file CHANGELOG.md releases/$(ROOT_DIR)_v$(version).zip
+create_release: get_version
+	@echo "Creating release with version: $(VERSION)"
+	gh release create "v$(VERSION)" --target main --title "Version $(VERSION)" --notes-file CHANGELOG.md releases/blender_to_unity_v$(VERSION).zip
 
 # ===========================================
 # Complete Release Workflow
