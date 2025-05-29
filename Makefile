@@ -67,6 +67,7 @@ merge_pr: get_version
 
 # Create GitHub release with version tag and release assets
 create_release: get_version
+	$(eval ROOT_DIR := $(notdir $(CURDIR)))
 	@echo "Creating release with version: $(VERSION)"
 	gh release create "v$(VERSION)" --target main --title "Version $(VERSION)" --notes-file CHANGELOG.md releases/$(ROOT_DIR)_v$(VERSION).zip
 
