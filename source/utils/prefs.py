@@ -5,7 +5,6 @@ from .addon import package
 
 
 class XX_AP_preference(AddonPreferences):
-
     bl_idname = package
 
     def draw(self, context):

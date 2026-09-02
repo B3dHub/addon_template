@@ -25,9 +25,10 @@ REM --- Clone repository with specified branch ---
 git clone -b %branch% --recurse-submodules https://github.com/b3dhub/%project% releases/%project%
 cd releases
 
-REM --- Clean up git and github folders ---
+REM --- Clean up git, github and agents folders ---
 rd /s /q %project%\.git
 if exist %project%\.github rd /s /q %project%\.github
+if exist %project%\.agents rd /s /q %project%\.agents
 
 REM --- Extract version number from __init__.py ---
 for /f "tokens=2-4 delims=(), " %%a in ('findstr /R "version" %project%\__init__.py') do set version=%%a.%%b.%%c

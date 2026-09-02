@@ -1,12 +1,10 @@
-from typing import List
-
 import bpy
 from bpy.types import UILayout
 
 addon_keymaps = []
 
 
-def get_keymap_items(idname: str) -> List[bpy.types.KeyMapItem]:
+def get_keymap_items(idname: str) -> list[bpy.types.KeyMapItem]:
     """Get all keymap items that match the given idname.
 
     Args:

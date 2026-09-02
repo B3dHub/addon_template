@@ -1,7 +1,8 @@
 import os
 import time
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 import bpy
 
@@ -85,3 +86,5 @@ def timer(func: Callable) -> Callable:
 
 version = bl_info["version"]
 version_str = ".".join(map(str, bl_info["version"]))
+doc_url = bl_info["doc_url"]
+tracker_url = bl_info["tracker_url"]

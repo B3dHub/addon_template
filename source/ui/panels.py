@@ -1,7 +1,7 @@
 import bpy
 from bpy.types import Panel
 
-from ..utils.addon import package, version, version_str
+from ..utils.addon import doc_url, package, tracker_url, version, version_str
 from ..utils.icon import icons
 
 
@@ -78,14 +78,14 @@ class XX_PT_help(Panel, Addon):
         col = layout.column()
         if version >= (1, 0, 1):
             col.operator("xx.changelog", icon="RECOVER_LAST")
-        col.operator("wm.url_open", text="Documentation", icon="HELP").url = "https://b3dhub.github.io/addon-docs"
-        col.operator("wm.url_open", text="Report a Bug", icon="URL").url = "https://discord.gg/sdnHHZpWbT"
-        col.operator("wm.url_open", text="Superhive", icon_value=icons["SUPERHIVE"]).url = (
-            "https://superhivemarket.com/products/addon"
-        )
-        col.operator("wm.url_open", text="Gumroad", icon_value=icons["GUMROAD"]).url = (
-            "https://b3dhub.gumroad.com/l/addon"
-        )
+        col.operator("wm.url_open", text="Documentation", icon="HELP").url = doc_url
+        col.operator("wm.url_open", text="Report a Bug", icon="URL").url = tracker_url
+        col.operator(
+            "wm.url_open", text="Superhive", icon_value=icons["SUPERHIVE"]
+        ).url = "https://superhivemarket.com/products/addon"
+        col.operator(
+            "wm.url_open", text="Gumroad", icon_value=icons["GUMROAD"]
+        ).url = "https://b3dhub.gumroad.com/l/addon"
 
 
 classes = (

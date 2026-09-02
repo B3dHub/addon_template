@@ -36,7 +36,7 @@ class XX_OT_changelog(Operator):
         for change in changes:
             row = col.row()
             if "https://discord.com" in change:
-                thread = re.search("\/(\d*)\)", change)[1]
+                thread = re.search(r"/(\d*)\)", change)[1]
                 row.label(
                     text=change.replace(
                         f"(https://discord.com/channels/959138815602229389/{thread})",
@@ -44,9 +44,9 @@ class XX_OT_changelog(Operator):
                     ),
                     icon=icon,
                 )
-                row.operator("wm.url_open", icon="LINKED", emboss=False).url = (
-                    f"https://discord.com/channels/959138815602229389/{thread}"
-                )
+                row.operator(
+                    "wm.url_open", icon="LINKED", emboss=False
+                ).url = f"https://discord.com/channels/959138815602229389/{thread}"
             else:
                 row.label(text=change, icon=icon)
 
