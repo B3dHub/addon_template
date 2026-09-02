@@ -32,12 +32,10 @@ build:
 # Pull Request Management
 # ===========================================
 
-# Get version from TOML file
+# Get version from TOML file (stdlib tomllib, Python 3.11+)
 get_version:
-	@echo "Installing toml module..."
-	@python -m pip install toml --quiet --user 2>nul || python -m pip install toml --quiet 2>nul || pip install toml --quiet 2>nul
 	@echo "Extracting version from blender_manifest.toml..."
-	$(eval VERSION := $(shell python -c "import toml; print(toml.load('blender_manifest.toml')['version'])" 2>nul))
+	$(eval VERSION := $(shell python -c "import tomllib; print(tomllib.load(open('blender_manifest.toml','rb'))['version'])" 2>nul))
 	@if "$(VERSION)"=="" (echo ERROR: Failed to extract version from blender_manifest.toml & exit 1)
 	@echo "Version extracted: $(VERSION)"
 
@@ -47,7 +45,7 @@ create_pr: get_version
 
 # Merge PR automatically
 merge_pr: get_version
-	gh pr merge --auto --merge
+	gh pr merge --merge
 	@echo "Successfully merged dev into main"
 
 # ===========================================

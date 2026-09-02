@@ -1,6 +1,15 @@
 # AGENTS.md
 
-Blender add-on template (B3dHub). Dual-mode: ships both legacy `bl_info` (root `__init__.py`, Blender 3.3+) and an extension `blender_manifest.toml` (Blender 4.2+). All real code lives in `source/`; the root `__init__.py` only delegates `register`/`unregister`.
+This document is addon-agnostic: it describes the boilerplate's structure and conventions, which apply equally to the template and to any add-on forked from it. Never bake one add-on's specifics into the shared modules.
+
+## Agent Boundaries
+
+Agents write and edit code only. Never commit, build, or release — those belong to the user:
+
+- Never commit or push (`git commit`, `git push`, `make commit`); leave changes uncommitted in the working tree for review
+- Never build or release (`make build`, `make release`, `build.bat`, `make create_pr`, `make merge_pr`, `make create_release`, `gh …`)
+- Read-only git (`git status`, `git diff`, `git log`) is fine; anything that mutates history, branches, or the working tree is not
+- When finished, summarize what changed — the user runs the commit → build → release flow (see Build & Release in `README.md`)
 
 ## Blender API Reference
 
@@ -25,8 +34,8 @@ On-demand workflows live in `.agents/skills/`:
 - **`blender-conventions`** — SOLID, naming, registration patterns, and
   no-unnecessary-abstraction rules for this codebase
 
-Forking the template into a new add-on: follow the checklist in `README.md`. Version bumps
-and the `make release` flow are documented under Build & Release below.
+Forking the template into a new add-on: follow the checklist in `README.md`. The release
+flow is user-driven — see Agent Boundaries.
 
 ## Architecture
 
@@ -53,8 +62,8 @@ source/
 
 ## Conventions
 
-- **Naming**: `XX_` is the placeholder prefix — replace consistently across all files when forking (`XX_OT_`, `XX_PT_`, `XX_UL_`, `XX_MT_`, `XX_AP_`, `XX_PG_`; operator idnames `xx.*`). Keep the Blender class-name convention: `{ADDON}_{TYPE}_{NAME}`.
-- **Operators**: implement `poll()` (guard context) and `description()` classmethods; use `\n` + `•` formatting for keymap hints in tooltips (see `ops/test.py`).
+- **Naming**: Blender class names follow `{ADDON}_{TYPE}_{NAME}`. In the template the add-on prefix is the `XX_` placeholder (`XX_OT_`, `XX_PT_`, `XX_UL_`, `XX_MT_`, `XX_AP_`, `XX_PG_`; operator idnames `xx.*`) — replace it consistently across all files when forking.
+- **Operators**: implement `poll()` (guard context) and `description()` classmethods; use `\n` + `•` formatting for keymap hints in tooltips (see the demo operator `ops/test.py`).
 - **Properties**: attach to `bpy.types.Scene` in `props.py` with `PointerProperty`; delete them in `unregister()` before unregistering classes.
 - **Icons**: drop PNGs into `icons/` (auto-loaded, recursive); reference via `icons["NAME"]` as `icon_value=`. Preview thumbnails go in `previews/` and are exposed through the `enum_previews` callback.
 - **Changelog**: `CHANGELOG.md` uses `**Added**` / `**Fixed**` / `**Changed**` / `**Improved**` / `**Removed**` sections with `- ` items — the changelog operator parses this exact format.
@@ -73,4 +82,4 @@ source/
 - `keymap.py`: register keymaps in `keyconfigs.addon` (never `user`), store them in `addon_keymaps`, and remove them on unregister — otherwise they leak between sessions.
 - `icon.py`/`preview.py`: preview collections must be removed in `unregister()` or Blender leaks memory; `icon.register()` defensively unregisters first if re-running.
 - `changelog.py` reads `CHANGELOG.md` relative to the module file — keep the file at repo root.
-- `bl_info` is required for legacy installs even when the manifest exists; keep metadata duplicated and consistent.
+- `bl_info` is required for legacy installs even when the manifest exists; keep metadata duplicated and consistent — including `version`, which must be bumped in both places together.
