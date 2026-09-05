@@ -9,7 +9,8 @@ Agents write and edit code only. Never commit, build, or release — those belon
 - Never commit or push (`git commit`, `git push`, `make commit`); leave changes uncommitted in the working tree for review
 - Never build or release (`make build`, `make release`, `build.bat`, `make create_pr`, `make merge_pr`, `make create_release`, `gh …`)
 - Read-only git (`git status`, `git diff`, `git log`) is fine; anything that mutates history, branches, or the working tree is not
-- When finished, summarize what changed — the user runs the commit → build → release flow (see Build & Release in `README.md`)
+- When finished, summarize what changed — the user runs the commit → build → release flow
+- Draft concise `CHANGELOG.md` entries (one line per user-visible fix/feature, grouped under the existing `**Added**` / `**Fixed**` / `**Changed**` / `**Improved**` / `**Removed**` sections) so release notes are ready to review; the user still runs the release flow
 
 ## Blender API Reference
 
