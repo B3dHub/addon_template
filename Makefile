@@ -45,7 +45,7 @@ create_pr: get_version
 
 # Merge PR automatically
 merge_pr: get_version
-	gh pr merge --merge
+	gh pr merge --auto --merge
 	@echo "Successfully merged dev into main"
 
 # ===========================================

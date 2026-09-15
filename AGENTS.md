@@ -10,7 +10,16 @@ Agents write and edit code only. Never commit, build, or release — those belon
 - Never build or release (`make build`, `make release`, `build.bat`, `make create_pr`, `make merge_pr`, `make create_release`, `gh …`)
 - Read-only git (`git status`, `git diff`, `git log`) is fine; anything that mutates history, branches, or the working tree is not
 - When finished, summarize what changed — the user runs the commit → build → release flow
-- Draft concise `CHANGELOG.md` entries (one line per user-visible fix/feature, grouped under the existing `**Added**` / `**Fixed**` / `**Changed**` / `**Improved**` / `**Removed**` sections) so release notes are ready to review; the user still runs the release flow
+- Draft concise `CHANGELOG.md` entries so release notes are ready to review; the user still runs the release flow. Only do this for host add-on changes — never draft `CHANGELOG.md` entries for `qbpy` submodule changes. Entry policy: only user-visible changes get their own entry; `**Fixed**` keeps the ~10–12 most important user-visible fixes (merge related fixes into one entry); all hidden/internal changes go under one general entry at the end of `**Fixed**`. Keep every entry to one line that fits the changelog popup (fixed width 500 px, see `source/changelog.py`) — target ~60 characters or fewer so it does not wrap
+
+## Supported Blender Versions
+
+The supported range is **Blender 3.3 (minimum) through the latest Blender API release (maximum)** — currently 5.2. Every add-on built on this boilerplate must work across that whole span.
+
+- **Minimum**: read `bl_info["blender"]` from the add-on's `__init__.py` — (3, 3, 0) for this repo. If an add-on ships without `bl_info`, the minimum is `blender_version_min` from `blender_manifest.toml` instead. Note the manifest value (4.2.0 here) is the extensions-platform install floor, not the code minimum.
+- **Maximum**: the latest Blender API release — currently 5.2. Verify against [docs.blender.org/api/current/](https://docs.blender.org/api/current/) and bump this number when a new API ships.
+- Gate version-specific APIs with `bpy.app.version` checks; see the "Blender version dispatch" section of `README.md` for the `_v3`/`_v4` sibling-file pattern.
+- Keep `README.md` up to date in the same change whenever host architecture changes — it is the host-add-on reference this document defers to.
 
 ## Blender API Reference
 
@@ -35,8 +44,7 @@ On-demand workflows live in `.agents/skills/`:
 - **`blender-conventions`** — SOLID, naming, registration patterns, and
   no-unnecessary-abstraction rules for this codebase
 
-Forking the template into a new add-on: follow the checklist in `README.md`. The release
-flow is user-driven — see Agent Boundaries.
+Host-add-on specifics (architecture, naming, version dispatch, background bake) live in `README.md` — consult it when editing this repo. The release flow is user-driven — see Agent Boundaries.
 
 ## Architecture
 
@@ -68,7 +76,7 @@ source/
 - **Properties**: attach to `bpy.types.Scene` in `props.py` with `PointerProperty`; delete them in `unregister()` before unregistering classes.
 - **Icons**: drop PNGs into `icons/` (auto-loaded, recursive); reference via `icons["NAME"]` as `icon_value=`. Preview thumbnails go in `previews/` and are exposed through the `enum_previews` callback.
 - **Changelog**: `CHANGELOG.md` uses `**Added**` / `**Fixed**` / `**Changed**` / `**Improved**` / `**Removed**` sections with `- ` items — the changelog operator parses this exact format.
-- **Docs**: keep `doc_url` in `bl_info`/manifest in sync with `manual.py` and the Help panel links in `ui/panels.py`.
+- **Docs URLs**: three distinct URLs, intentionally separate — never sync or unify them. `doc_url` in `bl_info` is the add-on's documentation page (the Help panel's Documentation button reads it via `utils/addon.py`); `website` in `blender_manifest.toml` is the project/marketplace site shown on extension platforms; the base URL in `utils/manual.py` is the per-operator online manual map registered via `bpy.utils.register_manual_map` (powers right-click → Online Manual).
 
 ## Coding Principles
 
