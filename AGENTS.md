@@ -10,16 +10,32 @@ Agents write and edit code only. Never commit, build, or release — those belon
 - Never build or release (`make build`, `make release`, `build.bat`, `make create_pr`, `make merge_pr`, `make create_release`, `gh …`)
 - Read-only git (`git status`, `git diff`, `git log`) is fine; anything that mutates history, branches, or the working tree is not
 - When finished, summarize what changed — the user runs the commit → build → release flow
-- Draft concise `CHANGELOG.md` entries so release notes are ready to review; the user still runs the release flow. Only do this for host add-on changes — never draft `CHANGELOG.md` entries for `qbpy` submodule changes. Entry policy: only user-visible changes get their own entry; `**Fixed**` keeps the ~10–12 most important user-visible fixes (merge related fixes into one entry); all hidden/internal changes go under one general entry at the end of `**Fixed**`. Keep every entry to one line that fits the changelog popup (fixed width 500 px, see `source/changelog.py`) — target ~60 characters or fewer so it does not wrap
+- Draft concise `CHANGELOG.md` entries so release notes are ready to review; the user still runs the release flow. Only do this for host add-on changes — never draft `CHANGELOG.md` entries for `qbpy` submodule changes. Changelog entries describe the release delta — what the working branch has that `main` does not (`git log main..HEAD`, `git diff main...HEAD`), written when the work is committed to `dev`. Never add an entry for work-in-progress or for a fix to code that is not on `main` yet (iterating on an unreleased `dev` feature) — update the existing draft entry instead. Entry policy: only user-visible changes get their own entry; `**Fixed**` keeps the ~10–12 most important user-visible fixes (merge related fixes into one entry); hidden/internal changes go under the section that fits them best (`**Added**` / `**Fixed**` / `**Changed**` / `**Improved**` / `**Removed**`) rather than all being folded into `**Fixed**`. Keep every entry to one line that fits the changelog popup (fixed width 500 px, see `source/changelog.py`) — target ~60 characters or fewer so it does not wrap
 
 ## Supported Blender Versions
 
-The supported range is **Blender 3.3 (minimum) through the latest Blender API release (maximum)** — currently 5.2. Every add-on built on this boilerplate must work across that whole span.
+The supported range of each add-on is **its declared minimum through the latest Blender API release (maximum)** — currently 5.2 — and the add-on must work across that whole span. The minimum comes from the add-on's own `bl_info`, so it differs per fork: this repo declares 3.3, a fork may declare 4.2.
 
-- **Minimum**: read `bl_info["blender"]` from the add-on's `__init__.py` — (3, 3, 0) for this repo. If an add-on ships without `bl_info`, the minimum is `blender_version_min` from `blender_manifest.toml` instead. Note the manifest value (4.2.0 here) is the extensions-platform install floor, not the code minimum.
+- **Minimum**: read `bl_info["blender"]` from the add-on's `__init__.py` — (3, 3, 0) for this repo. If an add-on ships without `bl_info`, fall back to `blender_version_min`. **Never edit `blender_version_min` in `blender_manifest.toml`** — it stays `4.2.0`, the Extensions platform floor, and is independent of the legacy `bl_info` minimum.
 - **Maximum**: the latest Blender API release — currently 5.2. Verify against [docs.blender.org/api/current/](https://docs.blender.org/api/current/) and bump this number when a new API ships.
 - Gate version-specific APIs with `bpy.app.version` checks; see the "Blender version dispatch" section of `README.md` for the `_v3`/`_v4` sibling-file pattern.
 - Keep `README.md` up to date in the same change whenever host architecture changes — it is the host-add-on reference this document defers to.
+
+## Headless Testing
+
+Use the local Blender builds in `C:\Users\karan\Downloads\Blender\stable\` for headless checks — one folder per release (the hash suffix changes with each build). Pick the build matching the add-on's declared minimum plus the latest; if the minimum isn't installed there (e.g. a fork declaring 3.3), download it into the same folder:
+
+- `blender-3.3.21-lts.e016c21db151\blender.exe` — minimum for this repo
+- `blender-5.2.0-lts.fbe6228777e7\blender.exe` — latest supported
+
+Run test scripts in background with factory startup:
+
+```powershell
+& "C:\Users\karan\Downloads\Blender\stable\blender-5.2.0-lts.fbe6228777e7\blender.exe" -b --factory-startup --python path\to\script.py
+```
+
+- Test against both the add-on's declared minimum (per `bl_info["blender"]`) and the latest build over the supported range.
+- `preferences.system.ui_scale` reports `0.0` in background mode (GUI-only), so stub it when testing pixel-sized math.
 
 ## Blender API Reference
 

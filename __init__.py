@@ -8,7 +8,7 @@ bl_info = {
     "location": "3D Viewport > Sidebar(N-Panel) > Addon",
     "support": "COMMUNITY",
     "warning": "",
-    "doc_url": "",
+    "doc_url": "https://b3dhub.github.io/addons/{addon-name}/docs",
     "tracker_url": "https://discord.gg/sdnHHZpWbT",
 }
 

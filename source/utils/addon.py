@@ -84,7 +84,7 @@ def timer(func: Callable) -> Callable:
     return wrapper
 
 
-version = bl_info["version"]
-version_str = ".".join(map(str, bl_info["version"]))
-doc_url = bl_info["doc_url"]
-tracker_url = bl_info["tracker_url"]
+version = bl_info.get("version", (0, 0, 0))
+version_str = ".".join(map(str, version))
+doc_url = bl_info.get("doc_url", "https://b3dhub.github.io/addons")
+tracker_url = bl_info.get("tracker_url", "https://discord.gg/sdnHHZpWbT")

@@ -30,3 +30,4 @@ def unregister():
         previews.remove(pcoll)
 
     preview_collections.clear()
+    icons.clear()
