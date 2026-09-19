@@ -1,4 +1,5 @@
-# Propagate this template's AGENTS.md and .agents/ into every sibling Blender add-on.
+# Propagate shared boilerplate (AGENTS.md, .agents/, build.bat, Makefile) from this
+# template into every sibling Blender add-on.
 # One command:  powershell -NoProfile -ExecutionPolicy Bypass -File sync_agents.ps1
 #        or:    make sync_agents
 $ErrorActionPreference = 'Stop'
@@ -6,13 +7,14 @@ $ErrorActionPreference = 'Stop'
 $source = $PSScriptRoot
 $root = Split-Path -Parent $source
 
-# Repos that keep their own agents config (not overwritten).
+# Repos that keep their own config (not overwritten).
 $exclude = @('addon_template', 'bui')
 
-$sourceAgents = Join-Path $source 'AGENTS.md'
+# Shared files copied verbatim, and the shared directory mirrored.
+$files = @('AGENTS.md', 'build.bat', 'Makefile')
 $sourceSkills = Join-Path $source '.agents'
-if (-not (Test-Path -LiteralPath $sourceAgents) -or -not (Test-Path -LiteralPath $sourceSkills)) {
-    throw "Source AGENTS.md / .agents missing in $source"
+if (-not (Test-Path -LiteralPath $sourceSkills)) {
+    throw "Source .agents missing in $source"
 }
 
 $targets = Get-ChildItem -LiteralPath $root -Directory | Where-Object {
@@ -22,7 +24,6 @@ $targets = Get-ChildItem -LiteralPath $root -Directory | Where-Object {
 
 $results = foreach ($target in $targets) {
     $repo = $target.FullName
-    $destAgents = Join-Path $repo 'AGENTS.md'
     $destSkills = Join-Path $repo '.agents'
 
     # Never mirror through a link - it would write into the template.
@@ -34,9 +35,14 @@ $results = foreach ($target in $targets) {
     }
 
     $changed = $false
-    $before = if (Test-Path -LiteralPath $destAgents) { (Get-FileHash -LiteralPath $destAgents -Algorithm MD5).Hash } else { '' }
-    Copy-Item -LiteralPath $sourceAgents -Destination $destAgents -Force
-    if ((Get-FileHash -LiteralPath $destAgents -Algorithm MD5).Hash -ne $before) { $changed = $true }
+    foreach ($file in $files) {
+        $sourceFile = Join-Path $source $file
+        if (-not (Test-Path -LiteralPath $sourceFile)) { continue }
+        $destFile = Join-Path $repo $file
+        $before = if (Test-Path -LiteralPath $destFile) { (Get-FileHash -LiteralPath $destFile -Algorithm MD5).Hash } else { '' }
+        Copy-Item -LiteralPath $sourceFile -Destination $destFile -Force
+        if ((Get-FileHash -LiteralPath $destFile -Algorithm MD5).Hash -ne $before) { $changed = $true }
+    }
 
     robocopy $sourceSkills $destSkills /MIR /NJH /NJS /NDL /NFL /NP /NS /NC | Out-Null
     if ($LASTEXITCODE -ge 8) { throw "robocopy failed for $($target.Name) (exit $LASTEXITCODE)" }
