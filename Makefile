@@ -22,6 +22,10 @@ sync:
 	git checkout $(branch)
 	git pull origin $(branch)
 
+# Propagate AGENTS.md and .agents/ to every sibling Blender add-on
+sync_agents:
+	powershell -NoProfile -ExecutionPolicy Bypass -File sync_agents.ps1
+
 # Build project using build.bat script (defaults to dev branch)
 build:
 	$(eval branch ?= dev)
