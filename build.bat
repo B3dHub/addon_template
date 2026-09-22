@@ -24,8 +24,16 @@ for %%I in ("%~dp0.") do set project=%%~nxI
 REM --- Remove stale clone from a previous failed run ---
 if exist releases\%project% rd /s /q releases\%project%
 
+REM --- Resolve the repository URL from the local origin remote ---
+set repo_url=
+for /f "delims=" %%u in ('git config --get remote.origin.url') do set repo_url=%%u
+if "%repo_url%"=="" (
+    echo ERROR: no git "origin" remote found in %CD%
+    exit /b 1
+)
+
 REM --- Clone repository with specified branch ---
-git clone -b %branch% --recurse-submodules https://github.com/b3dhub/%project% releases/%project%
+git clone -b %branch% --recurse-submodules "%repo_url%" releases\%project%
 cd releases
 
 REM --- Clean up git, github, agents and dev-only files ---
@@ -36,6 +44,7 @@ if exist %project%\AGENTS.md del /q %project%\AGENTS.md
 if exist %project%\.gitmodules del /q %project%\.gitmodules
 if exist %project%\build.bat del /q %project%\build.bat
 if exist %project%\Makefile del /q %project%\Makefile
+if exist %project%\tests rd /s /q %project%\tests
 if exist %project%\sync_agents.ps1 del /q %project%\sync_agents.ps1
 if exist %project%\.gitignore del /q %project%\.gitignore
 

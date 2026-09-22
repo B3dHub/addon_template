@@ -8,6 +8,7 @@ import bpy
 
 from ... import __package__ as package
 from ... import bl_info
+from .log import log
 
 
 def addon_path() -> str:
@@ -77,7 +78,7 @@ def timer(func: Callable) -> Callable:
         start: float = time.perf_counter()
         result: Any = func(*args, **kwargs)
         end: float = time.perf_counter()
-        print(f"{func.__name__} took {end - start:.2f} seconds to execute.")
+        log(f"{func.__name__} took {end - start:.2f} seconds to execute.")
 
         return result
 

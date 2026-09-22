@@ -23,6 +23,7 @@ source/
   ui/                  # Panels (XX_PT_*), UILists (XX_UL_*), Menus (XX_MT_*)
   utils/
     addon.py           # package, version, version_str, preferences(), tag_redraw(), timer
+    log.py             # PREFIX tag + log(); worker stdout markers parsed by the parent
     icon.py            # loads icons/*.png into `icons` dict (name -> icon_id)
     preview.py         # loads previews/*.png into EnumProperty items
     props.py           # PropertyGroups (XX_PG_*); attaches Scene pointer properties
@@ -73,16 +74,15 @@ Support is **each add-on's declared minimum through the latest Blender API relea
 
 ## 7. Headless Testing
 
-Use local builds in `C:\Users\karan\Downloads\Blender\stable\` — one folder per release (the hash suffix changes each build). Pick the build matching the add-on's declared minimum plus the latest; download the minimum into that folder if missing (e.g. a fork declaring 3.3).
-
-- `blender-3.3.21-lts.e016c21db151\blender.exe` — minimum for this repo
-- `blender-5.2.0-lts.fbe6228777e7\blender.exe` — latest supported
+Local builds live in `%USERPROFILE%\Downloads\Blender\stable\` (the Windows user profile's Downloads folder) — one folder per release (the hash suffix changes each build). Do not hardcode versions: enumerate the folder and run the test script against **every** build present at or above the declared minimum, so version-gated code is checked at each step of the LTS ladder. Download a missing minimum (per `bl_info["blender"]`) into that folder rather than assuming it exists.
 
 ```powershell
-& "C:\Users\karan\Downloads\Blender\stable\blender-5.2.0-lts.fbe6228777e7\blender.exe" -b --factory-startup --python path\to\script.py
+Get-ChildItem "$env:USERPROFILE\Downloads\Blender\stable" -Directory | ForEach-Object {
+    & "$($_.FullName)\blender.exe" -b --factory-startup --python path\to\script.py
+}
 ```
 
-- Test against both the declared minimum (per `bl_info["blender"]`) and the latest build.
+- Pay extra attention to the declared minimum and the latest build; the intermediate builds catch regressions in version-gated APIs (socket names, EEVEE, Grease Pencil, snapping) that are easy to miss.
 - `preferences.system.ui_scale` reports `0.0` in background mode (GUI-only) — stub it when testing pixel-sized math.
 
 ## 8. Changelog Entries
