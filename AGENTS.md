@@ -52,6 +52,7 @@ source/
 - **Clean names** — descriptive, unabbreviated (`matching_keymap_items`, not `kmis`). Match the existing Args/Returns docstring style.
 - **No unnecessary abstractions** — prefer direct, readable Blender API calls over wrapper layers; add a helper only when used more than once and it removes real duplication.
 - **Maintainable flow** — linear, obvious execution; early returns over nesting; keep `register`/`unregister` symmetric.
+- **No comments unless the code cannot speak for itself** — names and structure carry the meaning. Comment only what a reader cannot infer: intent behind a non-obvious decision, a Blender API quirk, a version-specific workaround (with the reason), or a deprecation. Never restate the next line, narrate the obvious, use banners/section dividers, or park commented-out code — delete it or fix the name instead. Docstrings are the exception: keep the Google style from **Clean names**.
 - **Blender best practices** — follow the [style guide](https://docs.blender.org/api/current/info_best_practice.html): correct `poll`, no `bpy.ops` in draw code, safe `bpy.context` access.
 
 ## 5. Gotchas
@@ -74,7 +75,7 @@ Support is **each add-on's declared minimum through the latest Blender API relea
 
 ## 7. Headless Testing
 
-Local builds live in `%USERPROFILE%\Downloads\Blender\stable\` (the Windows user profile's Downloads folder) — one folder per release (the hash suffix changes each build). Do not hardcode versions: enumerate the folder and run the test script against **every** build present at or above the declared minimum, so version-gated code is checked at each step of the LTS ladder. Download a missing minimum (per `bl_info["blender"]`) into that folder rather than assuming it exists.
+Local builds live in `%USERPROFILE%\Downloads\Blender\stable\` (the Windows user profile's Downloads folder) — one folder per release (the hash suffix changes each build). Do not hardcode versions: enumerate the folder and run the test script against **every** build present at or above the declared minimum, so version-gated code is checked at each step of the LTS ladder.
 
 ```powershell
 Get-ChildItem "$env:USERPROFILE\Downloads\Blender\stable" -Directory | ForEach-Object {
@@ -101,7 +102,7 @@ Draft concise `CHANGELOG.md` entries so release notes are review-ready — the u
 **Skills** (`.agents/skills/`) — load on demand:
 
 - **`blender-api`** — distilled bpy knowledge (data access, context, operators, registration, gotchas, version changes) with per-doc-page references; load when writing or debugging `bpy` instead of re-fetching docs.
-- **`blender-conventions`** — SOLID, naming, registration patterns, and no-unnecessary-abstraction rules for this codebase.
+- **`blender-conventions`** — SOLID, naming, no-comments-unless-needed, registration patterns, and no-unnecessary-abstraction rules for this codebase.
 
 **Blender API docs:**
 

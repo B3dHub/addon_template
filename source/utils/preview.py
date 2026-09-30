@@ -25,13 +25,10 @@ def enum_previews(self, context):
     return pcoll.previews
 
 
-# We can store multiple preview collections here,
-# however in this example we only store "main"
 preview_collections = {}
 
 
 def register():
-    # Example Previews
     pcoll = previews.new()
     pcoll.previews_dir = ""
     pcoll.previews = ()

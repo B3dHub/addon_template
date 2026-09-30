@@ -44,10 +44,8 @@ def register():
     kc = bpy.context.window_manager.keyconfigs.addon
 
     if kc is not None:
-        # 3D View
         km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
         addon_keymaps.append(km)
-        # km.keymap_items.new("xx.test", type="LEFTMOUSE", value="CLICK", shift=False, ctrl=False, alt=False, head=True)
 
 
 def unregister():
