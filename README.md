@@ -31,6 +31,7 @@ source/
     manual.py          # online manual map (bpy.ops idname -> docs page)
 icons/                 # drop PNG icons here (auto-loaded, recursive)
 previews/              # drop PNG preview thumbnails here
+presets/               # shipped built-in preset files (executed by script.execute_preset)
 ```
 
 Every module exposes `register()`/`unregister()`; each package `__init__.py` calls its children

@@ -1,6 +1,8 @@
 import bpy
+from bl_ui.utils import PresetPanel
 from bpy.types import Panel
 
+from ..ops.preset import PRESET_SUBDIR
 from ..utils.addon import doc_url, package, tracker_url, version, version_str
 from ..utils.icon import icons
 
@@ -28,12 +30,37 @@ class Addon:
         return col
 
 
+# Preset popover for XX_PT_object_mode. Two ownership styles, both rendering the
+# same PRESET_SUBDIR list:
+#
+# Panel-owned (active): the panel holds the preset_* attributes and inherits
+# PresetPanel.draw, which renders the list and its add/remove rows.
+#
+# Menu-owned: uncomment draw() to render XX_MT_preset_menu's contents instead, so
+# the menu owns the list and the preset_* attributes above become unused.
+class XX_PT_test_presets(PresetPanel, Panel):
+    bl_label = "Test Presets"
+    preset_subdir = PRESET_SUBDIR
+    preset_operator = "script.execute_preset"
+    preset_add_operator = "xx.test_preset_add"
+
+    # Menu-owned alternative.
+    # def draw(self, context):
+    #     layout = self.layout
+    #     layout.emboss = "PULLDOWN_MENU"
+    #     layout.operator_context = "EXEC_DEFAULT"
+    #     layout.menu_contents("XX_MT_preset_menu")
+
+
 class XX_PT_object_mode(Panel, Addon):
     bl_label = "Object Mode"
 
     @classmethod
     def poll(cls, context):
         return context.mode == "OBJECT"
+
+    def draw_header_preset(self, context):
+        XX_PT_test_presets.draw_panel_header(self.layout)
 
     def draw(self, context):
         layout = self.layout
@@ -69,13 +96,12 @@ class XX_PT_help(Panel, Addon):
     bl_options = {"DEFAULT_CLOSED"}
 
     def draw_header_preset(self, context):
-        layout = self.layout
-        layout.operator("preferences.addon_show", icon="PREFERENCES", emboss=False).module = package
+        self.layout.operator("preferences.addon_show", icon="PREFERENCES", emboss=False).module = package
 
     def draw(self, context):
         layout = self.layout
-
         col = layout.column()
+
         if version >= (1, 0, 1):
             col.operator("xx.changelog", icon="RECOVER_LAST")
         col.operator("wm.url_open", text="Documentation", icon="HELP").url = doc_url
@@ -89,6 +115,7 @@ class XX_PT_help(Panel, Addon):
 
 
 classes = (
+    XX_PT_test_presets,
     XX_PT_object_mode,
     XX_PT_edit_mode,
     XX_PT_help,
