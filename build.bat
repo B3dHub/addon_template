@@ -36,6 +36,11 @@ REM --- Clone repository with specified branch ---
 git clone -b %branch% --recurse-submodules "%repo_url%" releases\%project%
 cd releases
 
+if not exist %project%\__init__.py (
+    echo ERROR: git clone of branch "%branch%" failed
+    exit /b 1
+)
+
 REM --- Clean up git, github, agents and dev-only files ---
 rd /s /q %project%\.git
 if exist %project%\.github rd /s /q %project%\.github

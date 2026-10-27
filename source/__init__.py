@@ -4,8 +4,8 @@ from . import changelog, ops, ui, utils
 def register():
     changelog.register()
     ops.register()
-    ui.register()
     utils.register()
+    ui.register()
 
 
 def unregister():

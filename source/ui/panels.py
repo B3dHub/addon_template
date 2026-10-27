@@ -107,10 +107,10 @@ class XX_PT_help(Panel, Addon):
         col.operator("wm.url_open", text="Documentation", icon="HELP").url = doc_url
         col.operator("wm.url_open", text="Report a Bug", icon="URL").url = tracker_url
         col.operator(
-            "wm.url_open", text="Superhive", icon_value=icons["SUPERHIVE"]
+            "wm.url_open", text="Superhive", icon_value=icons.get("SUPERHIVE", 0)
         ).url = "https://superhivemarket.com/products/addon"
         col.operator(
-            "wm.url_open", text="Gumroad", icon_value=icons["GUMROAD"]
+            "wm.url_open", text="Gumroad", icon_value=icons.get("GUMROAD", 0)
         ).url = "https://b3dhub.gumroad.com/l/addon"
 
 
@@ -122,4 +122,15 @@ classes = (
 )
 
 
-register, unregister = bpy.utils.register_classes_factory(classes)
+register_classes, unregister_classes = bpy.utils.register_classes_factory(classes)
+
+
+def register() -> None:
+    if bpy.app.version >= (5, 2, 0):
+        Addon.bl_icon_value = icons.get("LOGO", 0)
+
+    register_classes()
+
+
+def unregister() -> None:
+    unregister_classes()
