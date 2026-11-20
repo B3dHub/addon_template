@@ -21,3 +21,25 @@ copyright = ["2022-2026 B3dHub"]
 
 # [permissions]
 # files = "Add-on saves textures to disk"
+
+[build]
+paths_exclude_pattern = [
+  "__pycache__/",
+
+  "/.agents/",
+  "/.git/",
+  "/.github/",
+  "/.vscode/",
+  "/docs/",
+  "/releases/",
+  "/tests/",
+
+  "/*.zip",
+  "/.gitignore",
+  "/.gitmodules",
+  "/AGENTS.md",
+  "/Makefile",
+  "/preferences.json",
+  "/README.md",
+  "/sync_agents.ps1",
+]

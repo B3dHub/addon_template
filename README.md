@@ -63,21 +63,23 @@ Then fork the template into your add-on:
 
 ## Build & Release
 
-Windows-first; `make` targets wrap `build.bat` and the `gh` CLI. Work happens on `dev`;
-releases flow `dev -> PR -> main -> GitHub release`.
+Builds use Blender's native `blender --command extension build` (driven by
+`blender_manifest.toml`, including its `[build] paths_exclude_pattern`); the `gh` CLI drives the
+GitHub side. Work happens on `dev`; releases flow `dev -> PR -> main -> GitHub release`.
 
 ```
 make sync                # fetch + checkout dev + pull
-make build               # clone, strip .git/.github/.agents, zip into releases/
+make sync_agents         # propagate AGENTS.md, .agents/, Makefile + manifest [build] to siblings
+make build               # build releases/{folder}_v{version}.zip via Blender extension build
 make create_pr           # PR dev -> main titled with the manifest version
 make merge_pr            # auto-merge the PR
 make release             # full flow: sync, build, PR, merge, tag v{version}, attach zip
 make commit "message"    # stage, commit, push
 ```
 
-`build.bat` names the zip from `bl_info["version"]`, while `make create_pr`/`merge_pr` read the
-manifest version — keep the two in sync (step 6 above).
+The zip version comes from `blender_manifest.toml`; keep it in sync with `bl_info["version"]`
+(step 6 above). Override the binary with `make build BLENDER=/path/to/blender`.
 
-Requirements: [Blender](https://www.blender.org/download/) (3.3+ for legacy installs, 4.2+ for
-extensions), [WinRAR](https://www.winrar.com/) (zipping), [GitHub CLI](https://cli.github.com/)
-(`gh`), and Python 3.11+ (stdlib `tomllib` for version extraction).
+Requirements: [Blender](https://www.blender.org/download/) 4.2+ (`extension build`),
+[GitHub CLI](https://cli.github.com/) (`gh`), and Python 3.11+ (stdlib `tomllib` for version
+extraction). No WinRAR or git-clone step needed.
