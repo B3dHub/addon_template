@@ -102,7 +102,7 @@ class XX_PT_help(Panel, Addon):
         layout = self.layout
         col = layout.column()
 
-        if version >= (1, 0, 1):
+        if version > (1, 0, 0):
             col.operator("xx.changelog", icon="RECOVER_LAST")
         col.operator("wm.url_open", text="Documentation", icon="HELP").url = doc_url
         col.operator("wm.url_open", text="Report a Bug", icon="URL").url = tracker_url
