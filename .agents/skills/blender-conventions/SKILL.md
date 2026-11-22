@@ -31,9 +31,15 @@ bake one add-on's specifics into shared modules.
 
 - **No abbreviations**: `matching_keymap_items`, not `kmis`; `convert_keymap_item_to_string`,
   not `conv_kmi`. If a name needs a comment to explain, rename it.
-- **Blender class naming**: `{ADDON}_{TYPE}_{NAME}` — `XX_OT_test` (operator, idname `xx.test`),
-  `XX_PT_object_mode` (panel), `XX_UL_demo_list` (UIList), `XX_MT_preset_menu` (menu),
-  `XX_AP_preference` (AddonPreferences), `XX_PG_test` (PropertyGroup)
+- **Blender class naming**: `{ADDON}_{TYPE}_{NAME}` — `XX_OT_test` (verb-only operator, idname
+  `xx.test`), `XX_PT_object_mode` (panel), `XX_UL_demo_list` (UIList), `XX_MT_preset_menu` (menu),
+  `XX_AP_preference` (AddonPreferences), `XX_PG_settings` (PropertyGroup)
+- **Operators**: `noun_verb` idnames and classes (`xx.layer_add`, `xx.layer_duplicate`,
+  `XX_OT_layer_add`); `bl_label` is `verb_noun` Title Case ("Add Layer", "Duplicate Layer")
+- **Properties**: `{ADDON}_PG_<noun>` groups; root bound via `PointerProperty` to a lowercase
+  snake-style addon id (`Scene.qreplace`); members are snake-style identifiers like
+  `tile_resolution`, booleans `is_enabled` / `has_run` / `use_hide` / `include_emission`, cursors
+  `object_index` or `active_point_index`
 - `XX_` is the placeholder prefix — replace consistently across ALL files when forking
 - Modules: lowercase underscore (`ops/`, `ui/`, `utils/`); one concern per module
 
